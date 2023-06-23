@@ -3,17 +3,67 @@
 <head>
   <title>FMS</title>
   <style>
-    body {
+     body {
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
     }
+
     #container {
       display: flex;
+      justify-content: space-between;
+      padding: 20px;
     }
+
     #left {
       width: 200px;
+      background-color: #f2f2f2;
+      padding: 10px;
     }
+
+    #left h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    #left h2 {
+      margin: 10px 0;
+      font-size: 18px;
+    }
+
+    #left ul {
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+    }
+
+    #left li {
+      margin-bottom: 5px;
+    }
+
     #right {
       flex-grow: 1;
+      padding: 10px;
+    }
+
+    #right h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    #right table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    #right th,
+    #right td {
+      padding: 8px;
+      border: 1px solid #ccc;
+    }
+
+    #right th {
+      background-color: #f2f2f2;
     }
   </style>
 </head>
@@ -22,40 +72,76 @@
     <div id="left">
       <h1>FMS</h1>
       <h2>People Needed</h2>
-      <ul>
-        <li>CMF1</li>
-        <li>VolvoBB/CU</li>
-        <li>Volvo Spa</li>
-        <li>Man BB/CU</li>
-        <li>BR 1</li>
-        <li>BR 2</li>
-        <li>Scania</li>
-        <li>PTC35UP</li>
-        <li>MQB Heck</li>
-        <li>MQB27</li>
-        <li>MQB CLT 1</li>
-        <li>MQB CLT 2</li>
-        <li>MNB CLT 3</li>
-        <li>MQB CLT 5</li>
-        <li>Touareg</li>
-        <li>MLBevo</li>
-        <li>Audi Heck</li>
-        <li>MQB 37</li>
-        <li>MEB 31</li>
-        <li>MRA2 Rear</li>
-        <li>MRA 2 Front</li>
-        <li>MFA2</li>
-        <li>MQB CLT Touch</li>
-        <li>MQB 27 Touch</li>
-        <!-- Continue the list with the remaining workplace names -->
-      </ul>
+      <ul id="workplaces-list"></ul>
+      <button onclick="populateNames()">Populate Names</button>
     </div>
     <div id="right">
       <h2>List of People</h2>
-      <table>
-        <!-- Use JavaScript and an API to populate the table with data from an Excel file -->
-      </table>
+      <table id="Trained_People"></table>
     </div>
   </div>
+
+  <script>
+    // Fetch the list of workplaces from the HTML and populate the ul element
+    const workplacesList = document.getElementById('workplaces-list');
+    const workplaces = [
+      'CMF1',
+      'VolvoBB/CU',
+      'Volvo Spa',
+      `Man BB/CU`,
+      `BR 1`,
+      `BR 2`,
+      `Scania`,
+      `PTC35UP`,
+      `MQB Heck`,
+      `MQB27`,
+      `MQB CLT 1`,
+      `MQB CLT 2`,
+      `MNB CLT 3`,
+      `MQB CLT 5`,
+      `Touareg`,
+      `MLBevo`,
+      `Audi Heck`,
+      `MQB 37`,
+      `MEB 31`,
+      `MRA2 Rear`,
+      `MRA 2 Front`,
+      `MFA2`,
+      `MQB CLT Touch`,
+      `MQB 27 Touch`
+      // Add remaining workplace names here
+    ];
+    workplaces.forEach(workplace => {
+      const li = document.createElement('li');
+      li.textContent = workplace;
+      workplacesList.appendChild(li);
+    });
+
+    // Function to populate the table with people's names
+    function populateNames() {
+      const peopleTable = document.getElementById('Trained_People');
+      peopleTable.innerHTML = ''; // Clear the table before populating
+
+      // Fetch data from the server
+      fetch('http://http://localhost:8080/Trained_People') // Replace with the correct server URL
+        .then(response => response.json())
+        .then(data => {
+          // Iterate through the data and populate the table rows
+          data.forEach(row => {
+            const tr = document.createElement('tr');
+            const nameCell = document.createElement('td');
+            const workplaceCell = document.createElement('td');
+            nameCell.textContent = row.Trained_People;
+            workplaceCell.textContent = row.FMS_Stations;
+            tr.appendChild(nameCell);
+            tr.appendChild(workplaceCell);
+            peopleTable.appendChild(tr);
+          });
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+  </script>
 </body>
 </html>
